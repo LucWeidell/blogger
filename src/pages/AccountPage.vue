@@ -7,14 +7,24 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { AppState } from '../AppState'
+import { blogsService } from '../services/BlogsService'
+import Pop from '../utils/Notifier'
+
 export default {
   name: 'Account',
+  account: computed(() => AppState.account),
   setup() {
-    return {
-      account: computed(() => AppState.account)
-    }
+    const myAccount = AppState.account
+    onMounted(async() => {
+      try {
+        await blogsService.getAll({ creatorId: myAccount.id })
+      } catch (error) {
+        Pop.toast('error', error)
+      }
+    })
+    return {}
   }
 }
 </script>

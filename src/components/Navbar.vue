@@ -24,11 +24,11 @@
           </router-link>
         </li>
         <!-- TODO this is the profile page -->
-        <!-- <li class="nav-item">
-          <router-link :to="{ name: 'Profile' }" class="nav-link">
-            Profile
+        <li class="nav-item">
+          <router-link :to="{ name: 'Account' }" class="nav-link">
+            Account
           </router-link>
-        </li> -->
+        </li>
       </ul>
       <button type="button" class="btn btn-primary mr-4 " data-toggle="modal" data-target="#create-modal">
         Create Blog

@@ -10,6 +10,12 @@ class BlogsService {
     AppState.blogs = res.data
     logger.log('Appstate blogs:', AppState.blogs)
   }
+
+  async createBlog(rawBlog) {
+    const res = await api.post('/api/blogs', rawBlog)
+    logger.log(res.data)
+    await this.getAll()
+  }
 }
 
 export const blogsService = new BlogsService()

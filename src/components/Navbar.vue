@@ -30,6 +30,9 @@
           </router-link>
         </li> -->
       </ul>
+      <button type="button" class="btn btn-primary mr-4 " data-toggle="modal" data-target="#create-modal">
+        Create Blog
+      </button>
       <span class="navbar-text">
         <button
           class="btn btn-outline-primary text-uppercase"
@@ -73,19 +76,94 @@
       </span>
     </div>
   </nav>
+
+  <!-- Modal -->
+  <div class="modal"
+       id="create-modal"
+       tabindex="-1"
+       role="dialog"
+       aria-labelledby="modelTitleId"
+       aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title">
+            Create a Blog
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body bg-dark">
+          <form @submit.prevent="createBlog">
+            <div class="form-group">
+              <label class="pr-2" for="title">Title</label>
+              <input type="text"
+                     required
+                     id="title"
+                     class="form-control"
+                     placeholder="Title..."
+                     v-model="state.newBlog.title"
+              >
+            </div>
+            <div class="form-group">
+              <label class="pr-2" for="imgUrl">ImageUrl</label>
+              <input type="text"
+                     required
+                     id="imgUrl"
+                     class="form-control"
+                     placeholder="ImgUrl..."
+                     v-model="state.newBlog.imgUrl"
+              >
+            </div>
+            <div class="form-group">
+              <label class="pr-2" for="body">Blog Text:</label>
+              <input type="text"
+                     required
+                     id="body"
+                     class="form-control"
+                     placeholder="Title..."
+                     v-model="state.newBlog.body"
+              >
+            </div>
+            <!-- NOTE refactor later blogs take tage as Well in an array -->
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Create
+            </button>
+          </form>
+        </div>
+        <div class="modal-footer bg-dark">
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { AuthService } from '../services/AuthService'
 import { AppState } from '../AppState'
 import { computed, reactive } from 'vue'
+import Pop from '../utils/Notifier'
+import { blogsService } from '../services/BlogsService'
 export default {
   setup() {
     const state = reactive({
+      newBlog: {},
       dropOpen: false
     })
     return {
       state,
+      async createBlog() {
+        try {
+          await blogsService.createBlog(state.newBlog)
+        } catch (error) {
+          Pop.toast('error', error)
+        }
+      },
       user: computed(() => AppState.user),
       async login() {
         AuthService.loginWithPopup()
@@ -98,7 +176,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .dropdown-menu {
   user-select: none;
   display: block;
@@ -119,5 +197,15 @@ a:hover {
 }
 .nav-item .nav-link.router-link-exact-active{
   color: var(--primary);
+}
+
+.modal-backdrop.show{
+  opacity: 1!important;
+  background:  var(--fade);
+  backdrop-filter: blur(30px) brightness(.5) contrast(.85);
+}
+.modal-body{
+  height: 50vh;
+  overflow-y: auto;
 }
 </style>
